@@ -1,0 +1,23 @@
+cloud:
+  aws:
+    region:
+      static: eu-central-1
+    stack:
+      auto: false
+    credentials:
+      profile-name: default
+
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+
+key: ${key}
+secret: ${secret}
+
+sqs:
+  endpoint: ${endpoint}

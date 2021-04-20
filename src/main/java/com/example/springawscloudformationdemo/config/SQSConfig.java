@@ -37,28 +37,20 @@ public class SQSConfig {
     @Value("${secret}")
     private String awsSecretKey;
 
-    private AmazonSQSAsync client;
-
-    @PostConstruct
-    private void init() {
+    @Bean
+    public AmazonSQSAsync amazonSQSAsync() {
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(awsAccessKey, awsSecretKey)
         );
-        client = AmazonSQSAsyncClientBuilder.standard()
+       return AmazonSQSAsyncClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(sqsUrl, Regions.EU_CENTRAL_1.getName()))
                 .build();
     }
 
     @Bean
-    public QueueMessagingTemplate getMessageTemplate(){
-        return new QueueMessagingTemplate(client);
-    }
-
-    @Bean
-    @Primary
-    public AmazonSQSAsync amazonSQSAsync(){
-        return client;
+    public QueueMessagingTemplate getMessageTemplate(AmazonSQSAsync amazonSQSAsync){
+        return new QueueMessagingTemplate(amazonSQSAsync);
     }
 
     public String getSqsUrl() {

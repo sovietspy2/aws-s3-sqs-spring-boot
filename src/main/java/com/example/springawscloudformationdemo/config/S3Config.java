@@ -6,12 +6,17 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQSAsync;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.config.QueueMessageHandlerFactory;
+import org.springframework.cloud.aws.messaging.listener.QueueMessageHandler;
+import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.PayloadArgumentResolver;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -46,17 +51,5 @@ public class S3Config {
     public AmazonS3 getAmazonS3() {
         return amazonS3;
     }
-
-    @Bean
-    public QueueMessageHandlerFactory queueMessageHandlerFactory() {
-        QueueMessageHandlerFactory factory = new QueueMessageHandlerFactory();
-        MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
-
-        //set strict content type match to false
-        messageConverter.setStrictContentTypeMatch(false);
-        factory.setArgumentResolvers(Collections.<HandlerMethodArgumentResolver>singletonList(new PayloadArgumentResolver(messageConverter)));
-        return factory;
-    }
-
 
 }

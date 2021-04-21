@@ -1,9 +1,7 @@
 package com.example.springawscloudformationdemo.controller;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.CacheControl;
@@ -33,6 +31,25 @@ public class S3Controller {
         tempFile.deleteOnExit();
     }
 
+    @PostMapping("/share")
+    public void share(@RequestParam("file") MultipartFile file) throws IOException {
+
+        // check size
+        // check file type
+        // check name
+
+
+        File tempFile = File.createTempFile("prefix-", "-suffix");
+        file.transferTo(tempFile);
+
+        PutObjectRequest request = new PutObjectRequest(
+                "wortex-my", file.getOriginalFilename(), tempFile)
+                .withCannedAcl(CannedAccessControlList.PublicRead);
+
+        PutObjectResult result = amazonS3.putObject(request);
+        tempFile.deleteOnExit();
+    }
+
 
     @GetMapping
     public List<String> listFiles() {
@@ -46,7 +63,7 @@ public class S3Controller {
     public ResponseEntity<InputStreamResource> getFile(@PathVariable String key) {
 
         GetObjectRequest getObjectRequest = new GetObjectRequest("wortex-my", key, false);
-        S3Object object =  amazonS3.getObject(getObjectRequest);
+        S3Object object = amazonS3.getObject(getObjectRequest);
 
         return ResponseEntity.ok()
                 .contentType(org.springframework.http.MediaType.APPLICATION_PDF)

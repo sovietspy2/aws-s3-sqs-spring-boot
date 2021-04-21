@@ -16,7 +16,7 @@ public class AWSEmailService {
     @Autowired
     private AmazonSimpleEmailService amazonSimpleEmailService;
 
-    static final String FROM = "AWS_VALIDATED_EMAIL@xxx.com";
+    static final String FROM = "xxx@xxx.com";
 
     static final String SUBJECT = "File arrived";
 

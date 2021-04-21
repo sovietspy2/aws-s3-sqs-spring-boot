@@ -32,7 +32,7 @@ public class S3EventHandler {
 
             URL url = amazonS3.getUrl(bucket, key);
 
-            emailService.sendEmail(url, "CUSTOMER@CUSTOMER.CUSTOMER");
+            emailService.sendEmail(url, "xxx@xxx.com");
         }
 
     }

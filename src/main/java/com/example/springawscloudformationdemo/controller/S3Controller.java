@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,12 +39,16 @@ public class S3Controller {
         // check file type
         // check name
 
-
         File tempFile = File.createTempFile("prefix-", "-suffix");
         file.transferTo(tempFile);
 
+        // to make the URL unique
+        String folder =  UUID.randomUUID().toString();
+
+        String key = folder+"/"+file.getOriginalFilename();
+
         PutObjectRequest request = new PutObjectRequest(
-                "wortex-my", file.getOriginalFilename(), tempFile)
+                "wortex-my", key, tempFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead);
 
         PutObjectResult result = amazonS3.putObject(request);
